@@ -11,6 +11,7 @@ public class Word {
 		int difference=0;
 		byte[] thisWord = this.word.getBytes();
 		byte[] otherWord = other.getWord().getBytes();
+		if(word.length()!=other.getWord().length()){ return difference; }
 		for(int i=0; i<word.length(); i++){
 			if(thisWord[i]!=otherWord[i]){
 				difference++;
@@ -23,6 +24,9 @@ public class Word {
 	}
 	public Word getParent(){
 		return parent;
+	}
+	public void setParent(Word word){
+		this.parent = word;
 	}
 	public int distanceToRoot(){
 		if(distance<0){
@@ -38,5 +42,12 @@ public class Word {
 	}
 	public void setRoot(){
 		distance = 0;
+	}
+	public String toString(){
+		String p = "unset";
+		if(parent!=null){
+			p = parent.getWord();
+		}
+		return "Word - "+word+" parent - "+p;
 	}
 }

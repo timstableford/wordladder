@@ -15,7 +15,24 @@ public class Graph {
 		}
 		return null;
 	}
-	public void setRoot(Word word){
-		word.setRoot();
+	public HashMap<Long, Word> iterateWord(Word tempRoot){
+		HashMap<Long, Word> map = new HashMap<Long, Word>();
+		if(tempRoot==null){ return map; }
+		long i=0;
+		for(Word h : dictionary.values()){
+			if(h.getParent()==null&&h.differnce(tempRoot)<=1){
+				h.setParent(tempRoot);
+				map.put(i,h);
+				i++;
+			}
+		}
+		return map;
+	}
+	public HashMap<Long, Word> iterateMap(HashMap<Long, Word> incomingHash){
+		HashMap<Long, Word> tempHash = new HashMap<Long,Word>();
+		for(Word h : dictionary.values()){
+			tempHash.putAll(iterateWord(h));
+		}
+		return tempHash;
 	}
 }
