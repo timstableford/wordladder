@@ -93,34 +93,36 @@ public class GUIMain extends JFrame implements ActionListener{
 		if(dictName==null){
 			error("Dictionary for this length undefined");
 		}else{
-			DictionaryLoader dl = new DictionaryLoader(Dictionaries.N5);
+			status("Loading Dictionary...");
+			DictionaryLoader dl = new DictionaryLoader(dictName);
 			HashMap<String, Word> dict = dl.getDictionary();
 			@SuppressWarnings("unchecked")
 			Graph g = new Graph((HashMap<String,Word>)dict.clone());
-			
-			Word startW = g.findWord(start);
+
+			Word startW = dict.get(start);
 			Word endW = dict.get(end);
+			status("Checking words in dictionary...");
 			if(startW==null){
 				error("End word not in dictionary");
 			}else if(endW==null){
 				error("Start word not in dictionary");
 			}else{
-			startW.setRoot();
-			
-			HashMap<String, Word> hashMap;
-			status("First iteration");
-			hashMap = g.iterateWord(startW);
-			int i=0;
-			while(endW.getParent()==null&&hashMap.size()>0){
-				status("Iteration "+i);
-				hashMap = g.iterateMap(hashMap);
-				i++;
-			}
-			displayWordTree(endW);
-			}
-			
+				startW.setRoot();
+
+				HashMap<String, Word> hashMap;
+				status("First iteration");
+				hashMap = g.iterateWord(startW);
+				int i=0;
+				while(endW.getParent()==null&&hashMap.size()>0){
+					status("Iteration "+i);
+					hashMap = g.iterateMap(hashMap);
+					i++;
+				}
+				status("Displaying tree");
+				displayWordTree(endW);
+			}		
 		}
-		
+
 	}
 	private void error(String error){
 		JOptionPane.showMessageDialog(this, error, "Error", JOptionPane.ERROR_MESSAGE);
