@@ -99,8 +99,13 @@ public class GUIMain extends JFrame implements ActionListener{
 			Graph g = new Graph((HashMap<String,Word>)dict.clone());
 			
 			Word startW = g.findWord(start);
-			startW.setRoot();
 			Word endW = dict.get(end);
+			if(startW==null){
+				error("End word not in dictionary");
+			}else if(endW==null){
+				error("Start word not in dictionary");
+			}else{
+			startW.setRoot();
 			
 			HashMap<String, Word> hashMap;
 			status("First iteration");
@@ -112,6 +117,7 @@ public class GUIMain extends JFrame implements ActionListener{
 				i++;
 			}
 			displayWordTree(endW);
+			}
 			
 		}
 		
