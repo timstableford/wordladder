@@ -8,11 +8,11 @@ public class Main {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		System.out.println("Loading dictionary 5");
 		DictionaryLoader dl = new DictionaryLoader(Dictionaries.FIVE);
-		Graph g = new Graph(dl.getDictionary());
+		HashMap<String, Word> dict = dl.getDictionary();
+		Graph g = new Graph((HashMap<String,Word>)dict.clone());
 		System.out.println("Setting root graph");
-		Word root = g.findWord("graph");
+		Word root = g.findWord("clash");
 		root.setRoot();
 		HashMap<String, Word> hashMap;
 		System.out.println("First iteration");
@@ -24,6 +24,24 @@ public class Main {
 			hashMap = g.iterateMap(hashMap);
 			i++;
 		}
+		//print a word ladder
+		Word endWord = dict.get("clock");
+		printWordTree(endWord);
+	}
+	private static void printWordTree(Word w){
+		Word tWord = w;
+		System.out.print(w.getWord());
+		if(w.getParent()==null&&w.getDistance()!=0){
+			System.out.println("no link found");
+			return;
+		}
+		int i=0;
+		while(i<20&&tWord.getDistance()!=0){
+			System.out.print(" - "+tWord.getParent().getWord());
+			tWord = tWord.getParent();
+			i++;
+		}
+		System.out.println();
 	}
 
 }

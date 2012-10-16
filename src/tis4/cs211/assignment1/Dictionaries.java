@@ -9,7 +9,8 @@ public enum Dictionaries {
 	SEVEN("dict7.dat"),
 	EIGHT("dict8.dat"),
 	NINE("dict9.dat"),
-	TEN("dict10.dat");
+	TEN("dict10.dat"),
+	SEVENTEEN("dict17.dat");
 	private final String file;
 	Dictionaries(String file){
 		this.file = file;

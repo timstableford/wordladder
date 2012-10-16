@@ -42,6 +42,10 @@ public class Word {
 	}
 	public void setRoot(){
 		distance = 0;
+		this.parent = this;
+	}
+	public int getDistance(){
+		return distance;
 	}
 	public String toString(){
 		String p = "unset";
