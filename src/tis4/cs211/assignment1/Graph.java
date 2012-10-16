@@ -20,7 +20,7 @@ public class Graph {
 		if(tempRoot==null){ return map; }
 		long i=0;
 		for(Word h : dictionary.values()){
-			if(h.getParent()==null&&h.differnce(tempRoot)<=1){
+			if(h.getParent()==null&&h.differnce(tempRoot)==1){
 				h.setParent(tempRoot);
 				map.put(i,h);
 				i++;
@@ -30,7 +30,7 @@ public class Graph {
 	}
 	public HashMap<Long, Word> iterateMap(HashMap<Long, Word> incomingHash){
 		HashMap<Long, Word> tempHash = new HashMap<Long,Word>();
-		for(Word h : dictionary.values()){
+		for(Word h : incomingHash.values()){
 			tempHash.putAll(iterateWord(h));
 		}
 		return tempHash;
