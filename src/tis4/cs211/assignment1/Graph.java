@@ -3,33 +3,26 @@ package tis4.cs211.assignment1;
 import java.util.HashMap;
 
 public class Graph {
-	private HashMap<Long, Word> dictionary;
-	public Graph(HashMap<Long, Word> dictionary){
+	private HashMap<String, Word> dictionary;
+	public Graph(HashMap<String, Word> dictionary){
 		this.dictionary = dictionary;
 	}
 	public Word findWord(String word){
-		for(Word h : dictionary.values()){
-			if(h.getWord().equalsIgnoreCase(word)){
-				return h;
-			}
-		}
-		return null;
+		return dictionary.get(word);
 	}
-	public HashMap<Long, Word> iterateWord(Word tempRoot){
-		HashMap<Long, Word> map = new HashMap<Long, Word>();
+	public HashMap<String, Word> iterateWord(Word tempRoot){
+		HashMap<String, Word> map = new HashMap<String, Word>();
 		if(tempRoot==null){ return map; }
-		long i=0;
 		for(Word h : dictionary.values()){
 			if(h.getParent()==null&&h.differnce(tempRoot)==1){
 				h.setParent(tempRoot);
-				map.put(i,h);
-				i++;
+				map.put(h.getWord(),h);
 			}
 		}
 		return map;
 	}
-	public HashMap<Long, Word> iterateMap(HashMap<Long, Word> incomingHash){
-		HashMap<Long, Word> tempHash = new HashMap<Long,Word>();
+	public HashMap<String, Word> iterateMap(HashMap<String, Word> incomingHash){
+		HashMap<String, Word> tempHash = new HashMap<String,Word>();
 		for(Word h : incomingHash.values()){
 			tempHash.putAll(iterateWord(h));
 		}

@@ -7,20 +7,18 @@ import java.util.Scanner;
 
 public class DictionaryLoader {
 	private String dictName;
-	private HashMap<Long, Word> hash;
+	private HashMap<String, Word> hash;
 	public DictionaryLoader(Dictionaries dictionary){
 		this.dictName = dictionary.file();
-		hash = new HashMap<Long, Word>();
+		hash = new HashMap<String, Word>();
 		Scanner scanner = new Scanner(new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/tis4/cs211/assignment1/words/"+dictName))));
-		long i=0;
 		while(scanner.hasNextLine()){
 			Word tempWord = new Word(scanner.nextLine());
-			hash.put(i,tempWord);
-			i++;
+			hash.put(tempWord.getWord(),tempWord);
 		}
 		scanner.close();
 	}
-	public HashMap<Long, Word> getDictionary(){
+	public HashMap<String, Word> getDictionary(){
 		return hash;
 	}
 }
