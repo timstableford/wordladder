@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class Main {
 	public static void main(String[] args) {
-		DictionaryLoader dl = new DictionaryLoader(Dictionaries.FIVE);
+		DictionaryLoader dl = new DictionaryLoader(Dictionaries.N5);
 		HashMap<String, Word> dict = dl.getDictionary();
 		@SuppressWarnings("unchecked")
 		Graph g = new Graph((HashMap<String,Word>)dict.clone());

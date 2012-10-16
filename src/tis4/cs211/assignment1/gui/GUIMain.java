@@ -6,17 +6,25 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import tis4.cs211.assignment1.Dictionaries;
+import tis4.cs211.assignment1.DictionaryLoader;
+import tis4.cs211.assignment1.Graph;
+import tis4.cs211.assignment1.Word;
 
 public class GUIMain extends JFrame implements ActionListener{
 	private static final long serialVersionUID = 1L;
 	private JTextField startWord, endWord;
+	private JButton calculate = null;
 	public static void main(String[] args){
 		new GUIMain();
 	}
@@ -54,7 +62,7 @@ public class GUIMain extends JFrame implements ActionListener{
 		mainPanel.add(endWord,c);
 		
 		c.gridx = 2; c.gridy = 0;
-		JButton calculate = new JButton("Calculate Shortest");
+		calculate = new JButton("Calculate Shortest");
 		calculate.addActionListener(this);
 		mainPanel.add(calculate,c);
 		//////////////////////////
@@ -62,7 +70,71 @@ public class GUIMain extends JFrame implements ActionListener{
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
+		if(e.getSource()==calculate){
+			String start,end;
+			start = startWord.getText();
+			end = endWord.getText();
+			if(start==null){
+				error("Start word null");
+			}else if(end==null){
+				error("End word null");
+			}else if(end.length()!=start.length()){
+				error("Words not equal in length");
+			}else{
+				calculateShortest(start,end);
+			}
+		}
+	}
+	private void calculateShortest(String start, String end){
+		String s = start;
+		start = end;
+		end = s;
+		Dictionaries dictName = Dictionaries.valueOf("N"+start.length()); 
+		if(dictName==null){
+			error("Dictionary for this length undefined");
+		}else{
+			DictionaryLoader dl = new DictionaryLoader(Dictionaries.N5);
+			HashMap<String, Word> dict = dl.getDictionary();
+			@SuppressWarnings("unchecked")
+			Graph g = new Graph((HashMap<String,Word>)dict.clone());
+			
+			Word startW = g.findWord(start);
+			startW.setRoot();
+			Word endW = dict.get(end);
+			
+			HashMap<String, Word> hashMap;
+			status("First iteration");
+			hashMap = g.iterateWord(startW);
+			int i=0;
+			while(endW.getParent()==null&&hashMap.size()>0){
+				status("Iteration "+i);
+				hashMap = g.iterateMap(hashMap);
+				i++;
+			}
+			displayWordTree(endW);
+			
+		}
 		
+	}
+	private void error(String error){
+		JOptionPane.showMessageDialog(this, error, "Error", JOptionPane.ERROR_MESSAGE);
+	}
+	private void status(String status){
+		System.out.println(status);
+	}
+	private void displayWordTree(Word end){
+		Word tWord = end;
+		System.out.print(end.getWord()+" ");
+		if(end.getParent()==null&&end.getDistance()!=0){
+			System.out.println("no link found");
+			return;
+		}
+		int i=0;
+		while(i<20&&tWord.getDistance()!=0){
+			System.out.print(" - "+tWord.getParent().getWord());
+			tWord = tWord.getParent();
+			i++;
+		}
+		System.out.println();
 	}
 }
