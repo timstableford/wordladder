@@ -12,12 +12,17 @@ public class Graph {
 	}
 	public HashMap<String, Word> iterateWord(Word tempRoot){
 		HashMap<String, Word> map = new HashMap<String, Word>();
+		HashMap<String, Word> toDelete = new HashMap<String,Word>();
 		if(tempRoot==null){ return map; }
 		for(Word h : dictionary.values()){
-			if(h.getParent()==null&&h.differnce(tempRoot)==1){
+			if(h.differnce(tempRoot)==1){
 				h.setParent(tempRoot);
 				map.put(h.getWord(),h);
+				toDelete.put(h.getWord(),h);
 			}
+		}
+		for(Word m: toDelete.values()){
+			dictionary.remove(m.getWord());
 		}
 		return map;
 	}
