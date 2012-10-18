@@ -2,13 +2,22 @@ package tis4.cs211.assignment1;
 
 import java.util.HashMap;
 
-public class Graph {
-	private HashMap<String, Word> dictionary;
-	public Graph(HashMap<String, Word> dictionary){
-		this.dictionary = dictionary;
+public class Graph implements Runnable{
+	private HashMap<String, Word> dictionary = null;
+	private Feedback feedback;
+	private String start,end;
+	private DictionaryLoader dictLoader = null;
+	private Dictionaries dict = null;
+	public Graph(DictionaryLoader dictLoader, Dictionaries dict, String start, String end, Feedback feedback){
+		this((HashMap<String, Word>)null,feedback);
+		this.dictLoader = dictLoader;
+		this.dict = dict;
+		this.end = start.toLowerCase();
+		this.start = end.toLowerCase();
 	}
-	public Word findWord(String word){
-		return dictionary.get(word);
+	public Graph(HashMap<String, Word> dictionary, Feedback feedback){
+		this.dictionary = dictionary;
+		this.feedback = feedback;
 	}
 	public HashMap<String, Word> iterateWord(Word tempRoot){
 		HashMap<String, Word> map = new HashMap<String, Word>();
@@ -32,5 +41,47 @@ public class Graph {
 			tempHash.putAll(iterateWord(h));
 		}
 		return tempHash;
+	}
+	public void displayWordTree(Word end){
+		Word tWord = end;
+		feedback.status(end.getWord()+" ",true);
+		if(end.getParent()==null&&end.getDistance()!=0){
+			feedback.status("no link found",true);
+			return;
+		}
+		int i=0;
+		while(i<20&&tWord.getDistance()!=0){
+			feedback.status(" - "+tWord.getParent().getWord(),true);
+			tWord = tWord.getParent();
+			i++;
+		}
+	}
+	@Override
+	public void run() {
+		if(dictLoader!=null&&dictionary==null){
+			dictionary = dictLoader.getDictionary(dict);
+		}
+		Word startW,endW;
+		startW = dictionary.get(start);
+		endW = dictionary.get(end);
+		feedback.status("Checking words in dictionary..."+"\n",true);
+		if(start==null){
+			feedback.error("End word not in dictionary");
+		}else if(end==null){
+			feedback.error("Start word not in dictionary");
+		}else{
+			startW.setRoot();
+			HashMap<String, Word> hashMap = new HashMap<String,Word>();
+			hashMap.put(startW.getWord(), startW);
+			int i=0;
+			while(endW.getParent()==null&&hashMap.size()>0){
+				feedback.status("Iteration "+i+"\n",true);
+				hashMap = this.iterateMap(hashMap);
+				i++;
+			}
+			feedback.status("Displaying tree"+"\n",true);
+			displayWordTree(endW);
+			feedback.done();
+		}
 	}
 }

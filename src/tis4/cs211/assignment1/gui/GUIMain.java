@@ -1,35 +1,45 @@
 package tis4.cs211.assignment1.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.HashMap;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import tis4.cs211.assignment1.Dictionaries;
 import tis4.cs211.assignment1.DictionaryLoader;
+import tis4.cs211.assignment1.Feedback;
 import tis4.cs211.assignment1.Graph;
-import tis4.cs211.assignment1.Word;
 
-public class GUIMain extends JFrame implements ActionListener{
+public class GUIMain extends JFrame implements ActionListener, Feedback{
 	private static final long serialVersionUID = 1L;
 	private JTextField startWord, endWord;
-	private JButton calculate = null;
+	private JTextField generationStart, generationLength;
+	private JButton calculate = null, generation = null, previous, next;
+	private JTextArea resultsArea;
+	private DictionaryLoader dictLoader;
 	public static void main(String[] args){
 		new GUIMain();
 	}
 	public GUIMain(){
+		dictLoader = new DictionaryLoader(this);
+		
 		this.setSize(400,300);
+		this.setTitle("Word Ladder");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		//menu
 		JMenuBar menuBar = new JMenuBar();
@@ -38,34 +48,95 @@ public class GUIMain extends JFrame implements ActionListener{
 		JMenu file = new JMenu("File");
 		menuBar.add(file);
 		
-		//panel
+		//main panel
 		JPanel mainPanel = new JPanel();
 		this.add(mainPanel,BorderLayout.CENTER);
+		
+		//shortest path panel///////////////////////////////////////////
 		GridBagConstraints c = new GridBagConstraints();
 		mainPanel.setLayout(new GridBagLayout());
-		c.gridx = 0;
-		c.gridy = 0;
+		c.gridx = 0; c.gridy = 0;
 		c.insets = new Insets(2,2,2,2);
 		c.fill = GridBagConstraints.HORIZONTAL;
-		c.weightx = 1;
-		c.weighty = 1;
+		c.weightx = 1; c.weighty = 0;
 		c.anchor = GridBagConstraints.NORTHWEST;
 		//////////////////////////
-		//items///////////////////
+		//items//
 		
 		c.gridx = 0; c.gridy = 0;
+		JLabel sW = new JLabel("Start Word");
+		mainPanel.add(sW,c);
+		c.gridy = 1;
 		startWord = new JTextField(10);
 		mainPanel.add(startWord,c);
 		
 		c.gridx = 1; c.gridy = 0;
+		JLabel eW = new JLabel("End Word");
+		mainPanel.add(eW,c);
+		c.gridy = 1;
 		endWord = new JTextField(10);
 		mainPanel.add(endWord,c);
 		
-		c.gridx = 2; c.gridy = 0;
+		c.gridx = 2; c.gridy = 1;
 		calculate = new JButton("Calculate Shortest");
 		calculate.addActionListener(this);
 		mainPanel.add(calculate,c);
 		//////////////////////////
+		
+		//generation panel/////////////////////////////////////////////
+		//items
+		c.gridx = 0; c.gridy = 2;
+		JLabel gSW = new JLabel("Generation Word");
+		mainPanel.add(gSW,c);
+		c.gridy = 3;
+		generationStart = new JTextField(10);
+		mainPanel.add(generationStart,c);
+		
+		c.gridx = 1; c.gridy = 2;
+		JLabel gC = new JLabel("Generation Length");
+		mainPanel.add(gC,c);
+		c.gridy = 3;
+		generationLength = new JTextField(10);
+		mainPanel.add(generationLength,c);
+		
+		c.gridx = 2; c.gridy = 3;
+		generation = new JButton("Generate");
+		generation.addActionListener(this);
+		mainPanel.add(generation,c);
+		////////////////////////////////////////////////////////////
+		
+		////////////results panel///////////////////////////////////
+		c.gridx = 0; c.gridy = 4;
+		c.insets = new Insets(2,2,2,2);
+		c.fill = GridBagConstraints.BOTH;
+		c.weightx = 1; c.weighty = 1;
+		c.anchor = GridBagConstraints.NORTHWEST;
+		//items//
+		c.gridwidth = 3;
+		resultsArea = new JTextArea();
+		resultsArea.setRows(5);
+		resultsArea.setAutoscrolls(true);
+		JScrollPane resScroll = new JScrollPane(resultsArea);
+		resScroll.setBorder(BorderFactory.createLineBorder(Color.black));
+		mainPanel.add(resScroll,c);
+		c.gridwidth = 1;
+		c.fill = GridBagConstraints.HORIZONTAL;
+		c.weighty = 0;
+		
+		c.gridx = 0; c.gridy = 5;
+		previous = new JButton("Previous");
+		previous.addActionListener(this);
+		previous.setEnabled(false);
+		mainPanel.add(previous,c);
+		
+		c.gridx = 2; c.gridy = 5;
+		next = new JButton("Next");
+		next.addActionListener(this);
+		next.setEnabled(false);
+		mainPanel.add(next,c);
+		
+		///////////////////
+		this.pack();
 		this.setVisible(true);
 	}
 	@Override
@@ -86,63 +157,29 @@ public class GUIMain extends JFrame implements ActionListener{
 		}
 	}
 	private void calculateShortest(String start, String end){
-		String s = start;
-		start = end;
-		end = s;
-		Dictionaries dictName = Dictionaries.valueOf("N"+start.length()); 
-		if(dictName==null){
+		Dictionaries dict = Dictionaries.valueOf("N"+start.length()); 
+		if(dict==null){
 			error("Dictionary for this length undefined");
 		}else{
-			status("Loading Dictionary...");
-			DictionaryLoader dl = new DictionaryLoader(dictName);
-			HashMap<String, Word> dict = dl.getDictionary();
-			@SuppressWarnings("unchecked")
-			Graph g = new Graph((HashMap<String,Word>)dict.clone());
-
-			Word startW = dict.get(start);
-			Word endW = dict.get(end);
-			status("Checking words in dictionary...");
-			if(startW==null){
-				error("End word not in dictionary");
-			}else if(endW==null){
-				error("Start word not in dictionary");
-			}else{
-				startW.setRoot();
-
-				HashMap<String, Word> hashMap;
-				status("First iteration");
-				hashMap = g.iterateWord(startW);
-				int i=0;
-				while(endW.getParent()==null&&hashMap.size()>0){
-					status("Iteration "+i);
-					hashMap = g.iterateMap(hashMap);
-					i++;
-				}
-				status("Displaying tree");
-				displayWordTree(endW);
-			}		
+			status("",false);
+			calculate.setEnabled(false);
+			generation.setEnabled(false);
+			Graph g = new Graph(dictLoader,dict,start,end,this);
+			new Thread(g).start();
 		}
-
 	}
-	private void error(String error){
+	public void done(){
+		calculate.setEnabled(true);
+		generation.setEnabled(true);
+	}
+	public void error(String error){
 		JOptionPane.showMessageDialog(this, error, "Error", JOptionPane.ERROR_MESSAGE);
 	}
-	private void status(String status){
-		System.out.println(status);
-	}
-	private void displayWordTree(Word end){
-		Word tWord = end;
-		System.out.print(end.getWord()+" ");
-		if(end.getParent()==null&&end.getDistance()!=0){
-			System.out.println("no link found");
-			return;
+	public void status(String status, boolean append){
+		if(!append){
+			resultsArea.setText(" ");
 		}
-		int i=0;
-		while(i<20&&tWord.getDistance()!=0){
-			System.out.print(" - "+tWord.getParent().getWord());
-			tWord = tWord.getParent();
-			i++;
-		}
-		System.out.println();
+		resultsArea.append(status);
 	}
+	
 }

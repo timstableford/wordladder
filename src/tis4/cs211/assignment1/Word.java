@@ -54,4 +54,8 @@ public class Word {
 		}
 		return "Word - "+word+" parent - "+p;
 	}
+	public void reset(){
+		parent = null;
+		distance = -1;
+	}
 }
