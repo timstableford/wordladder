@@ -154,6 +154,22 @@ public class GUIMain extends JFrame implements ActionListener, Feedback{
 			}else{
 				calculateShortest(start,end);
 			}
+		}else if(e.getSource()==generation){
+			String start;
+			int length;
+			if(generationStart==null){
+				error("Start word null");
+			}else if(generationLength==null){
+				error("End word null");
+			}else{
+				try{
+					length = Integer.parseInt(generationLength.getText());
+					start = generationStart.getText();
+					generation(start,length);
+				}catch(NumberFormatException nfe){
+					error("Length not a number");
+				}
+			}
 		}
 	}
 	private void calculateShortest(String start, String end){
@@ -164,7 +180,19 @@ public class GUIMain extends JFrame implements ActionListener, Feedback{
 			status("",false);
 			calculate.setEnabled(false);
 			generation.setEnabled(false);
-			Graph g = new Graph(dictLoader,dict,start,end,this);
+			Graph g = new Graph(dictLoader,dict,this,start,end);
+			new Thread(g).start();
+		}
+	}
+	private void generation(String start, int length){
+		Dictionaries dict = Dictionaries.valueOf("N"+start.length()); 
+		if(dict==null){
+			error("Dictionary for this length undefined");
+		}else{
+			status("",false);
+			calculate.setEnabled(false);
+			generation.setEnabled(false);
+			Graph g = new Graph(dictLoader,dict,this,start,length);
 			new Thread(g).start();
 		}
 	}
