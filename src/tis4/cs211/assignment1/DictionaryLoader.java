@@ -41,7 +41,7 @@ public class DictionaryLoader implements Runnable{
 		
 	}
 	private void resetWords(HashMap<String, Word> dictionary){
-			feedback.status("Words are dirty, cleaning them\n",true);
+			feedback.status("Resetting words\n",true);
 			for(Word w: dictionary.values()){
 				w.reset();
 			}

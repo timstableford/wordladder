@@ -44,11 +44,11 @@ public class Graph implements Runnable{
 	}
 	public void displayWordTree(Word end){
 		Word tWord = end;
-		feedback.status(end.getWord()+" ",true);
 		if(end.getParent()==null&&end.getDistance()!=0){
 			feedback.status("no link found",true);
 			return;
 		}
+		feedback.status(end.getWord()+" ",true);
 		int i=0;
 		while(i<20&&tWord.getDistance()!=0){
 			feedback.status(" - "+tWord.getParent().getWord(),true);
@@ -56,11 +56,16 @@ public class Graph implements Runnable{
 			i++;
 		}
 	}
+	/**
+	 * Generates the tree until the shortest route is found
+	 */
 	@Override
 	public void run() {
-		if(dictLoader!=null&&dictionary==null){
+		//load dictionary
+		if(dictLoader!=null&&dictionary==null){ 
 			dictionary = dictLoader.getDictionary(dict);
 		}
+		//get the words
 		Word startW,endW;
 		startW = dictionary.get(start);
 		endW = dictionary.get(end);
@@ -70,6 +75,7 @@ public class Graph implements Runnable{
 		}else if(end==null){
 			feedback.error("Start word not in dictionary");
 		}else{
+			//continue if they're in the dictionary
 			startW.setRoot();
 			HashMap<String, Word> hashMap = new HashMap<String,Word>();
 			hashMap.put(startW.getWord(), startW);
