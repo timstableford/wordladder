@@ -17,7 +17,7 @@ public class Graph implements Runnable{
 		this(dictLoader,dict,feedback,start);
 		this.length = length;
 	}
-	public Graph(DictionaryLoader dictLoader, Dictionaries dict, Feedback feedback, String start){
+	private Graph(DictionaryLoader dictLoader, Dictionaries dict, Feedback feedback, String start){
 		this.dictLoader = dictLoader;
 		this.dict = dict;
 		this.feedback = feedback;
@@ -26,8 +26,7 @@ public class Graph implements Runnable{
 	public HashMap<String, Word> iterateWord(Word tempRoot){
 		HashMap<String, Word> map = new HashMap<String, Word>();
 		HashMap<String, Word> toDelete = new HashMap<String,Word>();
-		if(tempRoot==null){ return map; }
-		for(Word h : dictionary.values()){
+		for(Word h: dictionary.values()){
 			if(h.differnce(tempRoot)==1){
 				h.setParent(tempRoot);
 				map.put(h.getWord(),h);
@@ -40,15 +39,15 @@ public class Graph implements Runnable{
 		return map;
 	}
 	public HashMap<String, Word> iterateMap(HashMap<String, Word> incomingHash){
-		HashMap<String, Word> tempHash = new HashMap<String,Word>();
+		HashMap<String, Word> output = new HashMap<String,Word>();
 		for(Word h : incomingHash.values()){
-			tempHash.putAll(iterateWord(h));
+			output.putAll(iterateWord(h));
 		}
-		return tempHash;
+		return output;
 	}
 	public void displayWordTree(Word end){
 		Word targetWord = end;
-		if(targetWord.getParent()==null&&targetWord.getDistance()!=0){
+		if(targetWord.getParent()==null){
 			feedback.status("no link found",true);
 			return;
 		}
@@ -86,38 +85,35 @@ public class Graph implements Runnable{
 		}else{
 			//continue if they're in the dictionary
 			startW.setRoot();
-			HashMap<String, Word> hashMap = new HashMap<String,Word>();
-			hashMap.put(startW.getWord(), startW);
-			int i=0;
-			while(endW.getParent()==null&&hashMap.size()>0){
+			feedback.status("Iteration 0\n", true);
+			HashMap<String, Word> hashMap = iterateWord(startW);
+			for(int i=1; endW.getParent()==null&&hashMap.size()>0; i++){
 				feedback.status("Iteration "+i+"\n",true);
 				hashMap = this.iterateMap(hashMap);
-				i++;
 			}
-			feedback.status("Displaying tree"+"\n",true);
+			feedback.status("Displaying ladder"+"\n",true);
 			displayWordTree(endW);
 			feedback.done();
 		}
 	}
 	private void generation(){
 		Word current = dictionary.get(start);
-		feedback.status("Checking words in dictionary..."+"\n",true);
+		feedback.status("Checking word in dictionary..."+"\n",true);
 		if(current==null){
-			feedback.error("Start word not in dictionary");
+			feedback.error("Word not in dictionary");
 		}else{
-			//continue if they're in the dictionary
+			//continue if it's in the dictionary
 			feedback.status("Doing generation...\n",true);
 			current.setRoot();
 			dictionary.remove(current.getWord());
-			for(int i=0;i<(length-1); i++){
+			int i = 0;
+			for(i=0;i<(length-1); i++){
 				Word next = generationAddWord(current,dictionary);
-				if(next==null){ 
-					feedback.status("Ladder of length "+(i+1)+"\n", true);
-					break; 
-				}
+				if(next==null){ break; }
 				current = next;
 			}
-			feedback.status("Displaying tree\n",true);
+			feedback.status("Ladder of length "+(i+1)+"\n", true);
+			feedback.status("Displaying ladder\n",true);
 			displayWordTree(current);
 			feedback.done();
 		}

@@ -5,7 +5,7 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Scanner;
 
-public class DictionaryLoader implements Runnable{
+public class DictionaryLoader{
 	private String dictName;
 	private Feedback feedback;
 	private HashMap<Dictionaries,HashMap<String,Word>> dictionaryCollection;
@@ -35,16 +35,10 @@ public class DictionaryLoader implements Runnable{
 		scanner.close();
 		dictionaryCollection.put(dict, hash);
 	}
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-		
-	}
 	private void resetWords(HashMap<String, Word> dictionary){
-			feedback.status("Resetting words\n",true);
-			for(Word w: dictionary.values()){
-				w.reset();
-			}
-
+		feedback.status("Resetting words\n",true);
+		for(Word w: dictionary.values()){
+			w.reset();
+		}
 	}
 }
