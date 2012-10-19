@@ -39,7 +39,7 @@ public class GUIMain extends JFrame implements ActionListener, Feedback{
 		dictLoader = new DictionaryLoader(this);
 		
 		this.setSize(400,300);
-		this.setTitle("Ladder Genertor 5000");
+		this.setTitle("Ladder Generator 5000");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		//menu
 		JMenuBar menuBar = new JMenuBar();

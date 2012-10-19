@@ -11,7 +11,7 @@ public class Graph implements Runnable{
 	private HashMap<String,Word> dictionary = null;
 	public Graph(DictionaryLoader dictLoader, Dictionaries dict, Feedback feedback, String start, String end){
 		this(dictLoader,dict,feedback,start);
-		this.end = end.toLowerCase();
+		this.end = end.toLowerCase().trim();;
 	}
 	public Graph(DictionaryLoader dictLoader, Dictionaries dict, Feedback feedback, String start, int length){
 		this(dictLoader,dict,feedback,start);
@@ -21,7 +21,7 @@ public class Graph implements Runnable{
 		this.dictLoader = dictLoader;
 		this.dict = dict;
 		this.feedback = feedback;
-		this.start = start.toLowerCase();
+		this.start = start.toLowerCase().trim();
 	}
 	public HashMap<String, Word> iterateWord(Word tempRoot){
 		HashMap<String, Word> map = new HashMap<String, Word>();
