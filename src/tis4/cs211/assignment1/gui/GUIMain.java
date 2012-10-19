@@ -29,7 +29,7 @@ public class GUIMain extends JFrame implements ActionListener, Feedback{
 	private static final long serialVersionUID = 1L;
 	private JTextField startWord, endWord;
 	private JTextField generationStart, generationLength;
-	private JButton calculate = null, generation = null, previous, next;
+	private JButton calculate = null, generation = null;
 	private JTextArea resultsArea;
 	private DictionaryLoader dictLoader;
 	public static void main(String[] args){
@@ -119,21 +119,6 @@ public class GUIMain extends JFrame implements ActionListener, Feedback{
 		JScrollPane resScroll = new JScrollPane(resultsArea);
 		resScroll.setBorder(BorderFactory.createLineBorder(Color.black));
 		mainPanel.add(resScroll,c);
-		c.gridwidth = 1;
-		c.fill = GridBagConstraints.HORIZONTAL;
-		c.weighty = 0;
-		
-		c.gridx = 0; c.gridy = 5;
-		previous = new JButton("Previous");
-		previous.addActionListener(this);
-		previous.setEnabled(false);
-		mainPanel.add(previous,c);
-		
-		c.gridx = 2; c.gridy = 5;
-		next = new JButton("Next");
-		next.addActionListener(this);
-		next.setEnabled(false);
-		mainPanel.add(next,c);
 		
 		///////////////////
 		this.pack();
