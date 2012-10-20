@@ -29,6 +29,7 @@ public class GraphTest implements Feedback{
 		c = new Word("max");
 		d = new Word("cox");
 		e = new Word("yes");
+		dictionary.put(a.getWord(),a);
 		dictionary.put(b.getWord(),b);
 		dictionary.put(c.getWord(), c);
 		dictionary.put(d.getWord(), d);
@@ -70,10 +71,15 @@ public class GraphTest implements Feedback{
 	}
 	@Test
 	public void testShortestRouteFoxToMax(){
-		HashMap<String,Word> dictionary = loader.getDictionary(Dictionaries.NTEST);
 		Word end = dictionary.get("max");
 		graphShortest.shortestRoute(dictionary, "fox", "max");
 		assertEquals("incorrect shortest path",graphGeneration.displayWordTree(end),"max - fax - fox");
+	}
+	@Test
+	public void testShortestRouteToSelf(){
+		Word end = dictionary.get("fox");
+		graphShortest.shortestRoute(dictionary, "fox", "fox");
+		assertEquals("incorrect shortest path",graphShortest.displayWordTree(end),"fox");
 	}
 	@Override
 	public void status(String status, boolean append) {}
