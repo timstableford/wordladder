@@ -23,7 +23,7 @@ public class DictionaryLoader{
 	/**
 	 * Loads a dictionary
 	 * @param dict
-	 * @return a clone of the dictionary hashmap word collection
+	 * @return a clone of the dictionary word collection
 	 * Checks if a dictionary is already loaded, if it is, reset the words to their default state
 	 * If it's not loaded, load it 
 	 */

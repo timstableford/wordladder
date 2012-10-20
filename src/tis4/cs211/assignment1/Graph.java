@@ -40,10 +40,10 @@ public class Graph implements Runnable{
 	 * Goes through each word in the dictionary, if that word has a change of only 1 letter, then it sets that words parent as the root word and adds it to a hashmap.
 	 * When complete it then goes through that hashmap and removes all words in it from the dictionary.
 	 */
-	public HashMap<String, Word> iterateWord(Word tempRoot){
+	private HashMap<String, Word> iterateWord(HashMap<String, Word> dictionary, Word tempRoot){
 		HashMap<String, Word> map = new HashMap<String, Word>();
 		for(Word h: dictionary.values()){
-			if(h.differnce(tempRoot)==1){
+			if(h.difference(tempRoot)==1){
 				h.setParent(tempRoot);
 				map.put(h.getWord(),h);
 			}
@@ -58,10 +58,10 @@ public class Graph implements Runnable{
 	 * @param incomingHash the hash to iterate all the words in
 	 * @return a hash of all the words that have had their parent set inside of this operation
 	 */
-	public HashMap<String, Word> iterateMap(HashMap<String, Word> incomingHash){
+	private HashMap<String, Word> iterateMap(HashMap<String, Word> dictionary, HashMap<String, Word> incomingHash){
 		HashMap<String, Word> output = new HashMap<String,Word>();
 		for(Word h : incomingHash.values()){
-			output.putAll(iterateWord(h));
+			output.putAll(iterateWord(dictionary,h));
 		}
 		return output;
 	}
@@ -77,7 +77,7 @@ public class Graph implements Runnable{
 			return;
 		}
 		feedback.status(end.getWord()+" ",true);
-		while(targetWord!=null&&targetWord.getDistance()!=0){
+		while(targetWord!=null&&targetWord.getParent()!=targetWord){
 			feedback.status(" - "+targetWord.getParent().getWord(),true);
 			targetWord = targetWord.getParent();
 		}
@@ -120,10 +120,10 @@ public class Graph implements Runnable{
 			//continue if they're in the dictionary
 			startW.setRoot();
 			feedback.status("Iteration 0\n", true);
-			HashMap<String, Word> hashMap = iterateWord(startW);
+			HashMap<String, Word> hashMap = iterateWord(dictionary,startW);
 			for(int i=1; endW.getParent()==null&&hashMap.size()>0; i++){
 				feedback.status("Iteration "+i+"\n",true);
-				hashMap = this.iterateMap(hashMap);
+				hashMap = this.iterateMap(dictionary,hashMap);
 			}
 			feedback.status("Displaying ladder"+"\n",true);
 			displayWordTree(endW);
@@ -167,7 +167,7 @@ public class Graph implements Runnable{
 	 */
 	private Word generationAddWord(Word current, HashMap<String,Word> dictionary){
 		for(Word w: dictionary.values()){
-			if(w.differnce(current)==1){
+			if(w.difference(current)==1){
 				w.setParent(current);
 				dictionary.remove(w.getWord());
 				return w;

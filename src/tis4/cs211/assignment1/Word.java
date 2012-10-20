@@ -6,7 +6,6 @@ package tis4.cs211.assignment1;
 public class Word {
 	private String word;
 	private Word parent = null;
-	private int distance = -1;
 	public Word(String word){
 		this.word = word;
 	}
@@ -14,7 +13,7 @@ public class Word {
 	 * @param other the other word to compare against
 	 * @return the difference in letters between this word and the other word
 	 */
-	public int differnce(Word other){
+	public int difference(Word other){
 		int difference=0;
 		byte[] thisWord = this.word.getBytes();
 		byte[] otherWord = other.word.getBytes();
@@ -39,11 +38,7 @@ public class Word {
 	 * Sets this as the start word
 	 */
 	public void setRoot(){
-		distance = 0;
 		this.parent = this;
-	}
-	public int getDistance(){
-		return distance;
 	}
 	public String toString(){
 		String p = "unset";
@@ -57,6 +52,17 @@ public class Word {
 	 */
 	public void reset(){
 		parent = null;
-		distance = -1;
+	}
+	@Override
+	public boolean equals(Object other){
+		boolean ret = true;
+		if(!(other instanceof Word)){
+			ret = false;
+		}
+		Word word = (Word)other;
+		if(ret&&word.getWord().equals(this.getWord())==false){
+			ret = false;
+		}
+		return ret;
 	}
 }

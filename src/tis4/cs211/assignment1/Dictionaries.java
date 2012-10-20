@@ -20,7 +20,8 @@ public enum Dictionaries {
 	N14("/tis4/cs211/assignment1/words/dict14.dat"),
 	N15("/tis4/cs211/assignment1/words/dict15.dat"),
 	N16("/tis4/cs211/assignment1/words/dict16.dat"),
-	N17("/tis4/cs211/assignment1/words/dict17.dat");
+	N17("/tis4/cs211/assignment1/words/dict17.dat"),
+	NTEST("/tis4/cs211/assignment1/tests/testdict.dat");
 	private final String file;
 	Dictionaries(String file){
 		this.file = file;
