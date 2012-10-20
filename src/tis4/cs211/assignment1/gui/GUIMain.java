@@ -158,27 +158,27 @@ public class GUIMain extends JFrame implements ActionListener, Feedback{
 		}
 	}
 	private void calculateShortest(String start, String end){
-		Dictionaries dict = Dictionaries.valueOf("N"+start.length()); 
-		if(dict==null){
-			error("Dictionary for this length undefined");
-		}else{
+		try{
+			Dictionaries dict = Dictionaries.valueOf("N"+start.length()); 
 			status("",false);
 			calculate.setEnabled(false);
 			generation.setEnabled(false);
 			Graph g = new Graph(dictLoader,dict,this,start,end);
 			new Thread(g).start();
+		}catch(IllegalArgumentException iae){
+			error("Dictionary for length "+start.length()+" not found");
 		}
 	}
 	private void generation(String start, int length){
-		Dictionaries dict = Dictionaries.valueOf("N"+start.length()); 
-		if(dict==null){
-			error("Dictionary for this length undefined");
-		}else{
+		try{
+			Dictionaries dict = Dictionaries.valueOf("N"+start.length()); 
 			status("",false);
 			calculate.setEnabled(false);
 			generation.setEnabled(false);
 			Graph g = new Graph(dictLoader,dict,this,start,length);
 			new Thread(g).start();
+		}catch(IllegalArgumentException iae){
+			error("Dictionary for length "+start.length()+" not found");
 		}
 	}
 	public void done(){

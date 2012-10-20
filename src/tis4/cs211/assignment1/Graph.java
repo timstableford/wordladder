@@ -78,9 +78,9 @@ public class Graph implements Runnable{
 		startW = dictionary.get(start);
 		endW = dictionary.get(end);
 		feedback.status("Checking words in dictionary..."+"\n",true);
-		if(start==null){
+		if(startW==null){
 			feedback.error("Start word not in dictionary");
-		}else if(end==null){
+		}else if(endW==null){
 			feedback.error("End word not in dictionary");
 		}else{
 			//continue if they're in the dictionary
@@ -93,8 +93,8 @@ public class Graph implements Runnable{
 			}
 			feedback.status("Displaying ladder"+"\n",true);
 			displayWordTree(endW);
-			feedback.done();
 		}
+		feedback.done();
 	}
 	private void generation(){
 		Word current = dictionary.get(start);
@@ -115,8 +115,8 @@ public class Graph implements Runnable{
 			feedback.status("Ladder of length "+(i+1)+"\n", true);
 			feedback.status("Displaying ladder\n",true);
 			displayWordTree(current);
-			feedback.done();
 		}
+		feedback.done();
 	}
 	private Word generationAddWord(Word current, HashMap<String,Word> dictionary){
 		for(Word w: dictionary.values()){
