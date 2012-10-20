@@ -129,9 +129,9 @@ public class GUIMain extends JFrame implements ActionListener, Feedback{
 			String start,end;
 			start = startWord.getText();
 			end = endWord.getText();
-			if(start==null){
+			if(start==null||start.length()<1){
 				error("Start word null");
-			}else if(end==null){
+			}else if(end==null||end.length()<1){
 				error("End word null");
 			}else if(end.length()!=start.length()){
 				error("Words not equal in length");
@@ -139,12 +139,12 @@ public class GUIMain extends JFrame implements ActionListener, Feedback{
 				calculateShortest(start,end);
 			}
 		}else if(e.getSource()==generation){
-			String start;
+			String start = generationStart.getText();
 			int length;
-			if(generationStart==null){
+			if(start==null||start.length()<1){
 				error("Start word null");
-			}else if(generationLength==null){
-				error("End word null");
+			}else if(generationLength.getText()==null||generationLength.getText().length()<1){
+				error("Length null");
 			}else{
 				try{
 					length = Integer.parseInt(generationLength.getText());
