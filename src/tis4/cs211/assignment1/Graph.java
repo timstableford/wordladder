@@ -68,7 +68,7 @@ public class Graph implements Runnable{
 	/**
 	 * Displays the word tree
 	 * @param end The word to start from, always has to be the end because it works backwards through parents
-	 * while the current word, initially the end word, has a parent send this word to the feedback object
+	 * while the current word, initially the end word, has a parent send this word is buffered and then the ladder is returned
 	 */
 	public String displayWordTree(Word end){
 		StringBuffer output = new StringBuffer();
@@ -76,8 +76,8 @@ public class Graph implements Runnable{
 		if(targetWord.getParent()==null){
 			output.append("no link found");
 		}else{
-			output.append(end.getWord()+" ");
-			while(targetWord!=null&&targetWord.getParent()!=targetWord){
+			output.append(end.getWord());
+			while(targetWord!=null&&targetWord.getParent()!=null&&targetWord.getParent()!=targetWord){
 				output.append(" - "+targetWord.getParent().getWord());
 				targetWord = targetWord.getParent();
 			}
@@ -94,7 +94,7 @@ public class Graph implements Runnable{
 			dictionary = dictLoader.getDictionary(dict);
 		}
 		if(end!=null){
-			shortestRoute();
+			shortestRoute(dictionary,start,end);
 		}else if(length>0){
 			generation();
 		}
@@ -108,7 +108,7 @@ public class Graph implements Runnable{
 	 * this continues until the end word has a parent or there's no more words to process.
 	 * Finally, it displays the tree and tells the GUI that it is done.
 	 */
-	private void shortestRoute(){
+	public void shortestRoute(HashMap<String,Word> dictionary, String start, String end){
 		//get the words
 		Word startW,endW;
 		startW = dictionary.get(start);
@@ -121,11 +121,13 @@ public class Graph implements Runnable{
 		}else{
 			//continue if they're in the dictionary
 			startW.setRoot();
+			//make sure the start word isnt in the dictonary, if it is remove it
+			dictionary.remove(startW.getWord());
 			feedback.status("Iteration 0\n", true);
 			HashMap<String, Word> hashMap = iterateWord(dictionary,startW);
 			for(int i=1; endW.getParent()==null&&hashMap.size()>0; i++){
 				feedback.status("Iteration "+i+"\n",true);
-				hashMap = this.iterateMap(dictionary,hashMap);
+				System.out.println(hashMap);
 			}
 			feedback.status("Displaying ladder"+"\n",true);
 			feedback.status(displayWordTree(endW),true);
@@ -139,7 +141,7 @@ public class Graph implements Runnable{
 	 * The same process is done with the new word, looped until the length it reached or it cant find a direction to go.
 	 * When done, it displays the tree and tells the GUI it's done. 
 	 */
-	private void generation(){
+	public void generation(){
 		Word current = dictionary.get(start);
 		feedback.status("Checking word in dictionary..."+"\n",true);
 		if(current==null){
@@ -167,7 +169,7 @@ public class Graph implements Runnable{
 	 * @param dictionary the word list to check in
 	 * @return a word that has a distance to 1 of the input word
 	 */
-	private Word generationAddWord(Word current, HashMap<String,Word> dictionary){
+	public Word generationAddWord(Word current, HashMap<String,Word> dictionary){
 		for(Word w: dictionary.values()){
 			if(w.difference(current)==1){
 				w.setParent(current);

@@ -21,7 +21,8 @@ public class GraphTest implements Feedback{
 	@Before
 	public void setUp() throws Exception {
 		loader = new DictionaryLoader(this);
-		graphGeneration = new Graph(loader, Dictionaries.NTEST, this, "fox", "max");
+		graphGeneration = new Graph(loader, Dictionaries.NTEST, this, "max", 10);
+		graphShortest = new Graph(loader, Dictionaries.NTEST, this, "fox", "max");
 		dictionary = new HashMap<String,Word>();
 		a = new Word("fox");
 		b = new Word("fax");
@@ -32,7 +33,6 @@ public class GraphTest implements Feedback{
 		dictionary.put(c.getWord(), c);
 		dictionary.put(d.getWord(), d);
 	}
-
 	@Test
 	public void testIterateWord(){
 		HashMap<String,Word> expected = new HashMap<String,Word>();
@@ -49,6 +49,31 @@ public class GraphTest implements Feedback{
 	public void testIterateNull(){
 		HashMap<String,Word> expected = new HashMap<String,Word>();
 		assertEquals("Iterate word unexpected result",expected,graphGeneration.iterateWord(dictionary, null));
+	}
+	@Test
+	public void testDisplayTreeNoProblems(){
+		c.setParent(b);
+		b.setParent(a);
+		a.setRoot();
+		assertEquals("word tree display wrong",graphGeneration.displayWordTree(c),"max - fax - fox");
+	}
+	@Test
+	public void testDisplayWordTreeNoLink(){
+		loader.getDictionary(Dictionaries.NTEST).get("max").setRoot();
+		assertEquals("tree should be blank",graphGeneration.displayWordTree(c),"no link found");
+	}
+	@Test
+	public void testDisplayWordTreeStartNotRoot(){
+		c.setParent(b);
+		b.setParent(a);
+		assertEquals("problem displaying tree",graphGeneration.displayWordTree(c),"max - fax - fox");
+	}
+	@Test
+	public void testShortestRouteFoxToMax(){
+		HashMap<String,Word> dictionary = loader.getDictionary(Dictionaries.NTEST);
+		Word end = dictionary.get("max");
+		graphShortest.shortestRoute(dictionary, "fox", "max");
+		assertEquals("incorrect shortest path",graphGeneration.displayWordTree(end),"max - fax - fox");
 	}
 	@Override
 	public void status(String status, boolean append) {}
