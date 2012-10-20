@@ -33,6 +33,7 @@ public class GraphTest implements Feedback{
 		dictionary.put(b.getWord(),b);
 		dictionary.put(c.getWord(), c);
 		dictionary.put(d.getWord(), d);
+		dictionary.put(e.getWord(), e);
 	}
 	@Test
 	public void testIterateWord(){
@@ -60,29 +61,51 @@ public class GraphTest implements Feedback{
 	}
 	@Test
 	public void testDisplayWordTreeNoLink(){
-		loader.getDictionary(Dictionaries.NTEST).get("max").setRoot();
-		assertEquals("tree should be blank",graphGeneration.displayWordTree(c),"no link found");
+		dictionary.get("max").setRoot();
+		assertEquals("tree should be blank","no link found",graphGeneration.displayWordTree(c));
 	}
 	@Test
 	public void testDisplayWordTreeStartNotRoot(){
 		c.setParent(b);
 		b.setParent(a);
-		assertEquals("problem displaying tree",graphGeneration.displayWordTree(c),"max - fax - fox");
+		assertEquals("problem displaying tree","max - fax - fox",graphGeneration.displayWordTree(c));
 	}
 	@Test
 	public void testShortestRouteFoxToMax(){
 		Word end = dictionary.get("max");
 		graphShortest.shortestRoute(dictionary, "fox", "max");
-		assertEquals("incorrect shortest path",graphGeneration.displayWordTree(end),"max - fax - fox");
+		assertEquals("incorrect shortest path","max - fax - fox",graphGeneration.displayWordTree(end));
 	}
 	@Test
 	public void testShortestRouteToSelf(){
 		Word end = dictionary.get("fox");
 		graphShortest.shortestRoute(dictionary, "fox", "fox");
-		assertEquals("incorrect shortest path",graphShortest.displayWordTree(end),"fox");
+		assertEquals("incorrect shortest path","no link found",graphShortest.displayWordTree(end));
+	}
+	@Test
+	public void testImpossibleRoute(){
+		Word end = dictionary.get("yes");
+		graphShortest.shortestRoute(dictionary, "fox", "yes");
+		assertEquals("should be no link","no link found", graphShortest.displayWordTree(end));
+	}
+	@Test
+	public void testIterateMap(){
+		HashMap<String,Word> mapToIterate = new HashMap<String,Word>();
+		d.setRoot();
+		mapToIterate.put(d.getWord(), d);
+		HashMap<String,Word> expected = new HashMap<String,Word>();
+		expected.put(a.getWord(),a);
+		assertEquals("Problem iterating word list",expected,graphShortest.iterateMap(dictionary, mapToIterate));
+	}
+	@Test
+	public void testGenerationImpossible(){
+		Word end = graphGeneration.generation(dictionary, "yes", 10);
+		assertEquals("should be no link","no link found",graphGeneration.displayWordTree(end));
 	}
 	@Override
-	public void status(String status, boolean append) {}
+	public void status(String status, boolean append) {
+		//System.out.print(status);
+	}
 
 	@Override
 	public void error(String error) {}

@@ -73,12 +73,13 @@ public class Graph implements Runnable{
 	public String displayWordTree(Word localEnd){
 		StringBuffer output = new StringBuffer();
 		Word targetWord = localEnd;
-		if(targetWord.getParent()==null){
+		if(targetWord.getParent()==null||targetWord==targetWord.getParent()){
 			output.append("no link found");
 		}else{
 			output.append(localEnd.getWord());
 			while(targetWord!=null&&targetWord.getParent()!=null&&targetWord.getParent()!=targetWord){
-				output.append(" - "+targetWord.getParent().getWord());
+				output.append(" - ");
+				output.append(targetWord.getParent().getWord());
 				targetWord = targetWord.getParent();
 			}
 		}
@@ -96,7 +97,7 @@ public class Graph implements Runnable{
 		if(end!=null){
 			shortestRoute(dictionary,start,end);
 		}else if(length>0){
-			generation(start,length);
+			generation(dictionary,start,length);
 		}
 	}
 	/**
@@ -140,9 +141,10 @@ public class Graph implements Runnable{
 	 * Then it finds a single word with a distance of 1 to it and sets its parent as the initial word.
 	 * The same process is done with the new word, looped until the length it reached or it cant find a direction to go.
 	 * When done, it displays the tree and tells the GUI it's done. 
+	 * @return the word it finishes on
 	 */
-	public void generation(String localStart, int localLength){
-		Word current = dictionary.get(localStart);
+	public Word generation(HashMap<String,Word> localDictionary, String localStart, int localLength){
+		Word current = localDictionary.get(localStart);
 		feedback.status("Checking word in dictionary..."+"\n",true);
 		if(current==null){
 			feedback.error("Word not in dictionary");
@@ -150,10 +152,10 @@ public class Graph implements Runnable{
 			//continue if it's in the dictionary
 			feedback.status("Doing generation...\n",true);
 			current.setRoot();
-			dictionary.remove(current.getWord());
+			localDictionary.remove(current.getWord());
 			int i = 0;
 			for(i=0;i<(localLength-1); i++){
-				Word next = generationAddWord(current,dictionary);
+				Word next = generationAddWord(current,localDictionary);
 				if(next==null){ break; }
 				current = next;
 			}
@@ -162,6 +164,7 @@ public class Graph implements Runnable{
 			feedback.status(displayWordTree(current),true);
 		}
 		feedback.done();
+		return current;
 	}
 	/**
 	 * Does the work for generation
