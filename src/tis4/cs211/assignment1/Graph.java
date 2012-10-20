@@ -1,7 +1,11 @@
 package tis4.cs211.assignment1;
 
 import java.util.HashMap;
-
+/**
+ * Data tree for calculating the shortest route and doing generation
+ * @author Tim Stableford
+ * Uses threads to not block the GUI
+ */
 public class Graph implements Runnable{
 	private Feedback feedback;
 	private String start,end;
@@ -9,10 +13,16 @@ public class Graph implements Runnable{
 	private DictionaryLoader dictLoader = null;
 	private Dictionaries dict = null;
 	private HashMap<String,Word> dictionary = null;
+	/**
+	 * Called for shortest route
+	 */
 	public Graph(DictionaryLoader dictLoader, Dictionaries dict, Feedback feedback, String start, String end){
 		this(dictLoader,dict,feedback,start);
 		this.end = end.toLowerCase().trim();;
 	}
+	/**
+	 * Called for generation
+	 */
 	public Graph(DictionaryLoader dictLoader, Dictionaries dict, Feedback feedback, String start, int length){
 		this(dictLoader,dict,feedback,start);
 		this.length = length;
@@ -23,21 +33,31 @@ public class Graph implements Runnable{
 		this.feedback = feedback;
 		this.start = start.toLowerCase().trim();
 	}
+	/**
+	 * Performs an iteration around a word
+	 * @param tempRoot Word to iterate around
+	 * @return All words in the dictionary which were within 1 of the root word
+	 * Goes through each word in the dictionary, if that word has a change of only 1 letter, then it sets that words parent as the root word and adds it to a hashmap.
+	 * When complete it then goes through that hashmap and removes all words in it from the dictionary.
+	 */
 	public HashMap<String, Word> iterateWord(Word tempRoot){
 		HashMap<String, Word> map = new HashMap<String, Word>();
-		HashMap<String, Word> toDelete = new HashMap<String,Word>();
 		for(Word h: dictionary.values()){
 			if(h.differnce(tempRoot)==1){
 				h.setParent(tempRoot);
 				map.put(h.getWord(),h);
-				toDelete.put(h.getWord(),h);
 			}
 		}
-		for(Word m: toDelete.values()){
+		for(Word m: map.values()){
 			dictionary.remove(m.getWord());
 		}
 		return map;
 	}
+	/**
+	 * Iterates all words in a hashmap
+	 * @param incomingHash the hash to iterate all the words in
+	 * @return a hash of all the words that have had their parent set inside of this operation
+	 */
 	public HashMap<String, Word> iterateMap(HashMap<String, Word> incomingHash){
 		HashMap<String, Word> output = new HashMap<String,Word>();
 		for(Word h : incomingHash.values()){
@@ -45,6 +65,11 @@ public class Graph implements Runnable{
 		}
 		return output;
 	}
+	/**
+	 * Displays the word tree
+	 * @param end The word to start from, always has to be the end because it works backwards through parents
+	 * while the current word, initially the end word, has a parent send this word to the feedback object
+	 */
 	public void displayWordTree(Word end){
 		Word targetWord = end;
 		if(targetWord.getParent()==null){
@@ -72,6 +97,15 @@ public class Graph implements Runnable{
 			generation();
 		}
 	}
+	/**
+	 * Finds the shortest route between 2 words
+	 * First it checks that the 2 words are in its dictionary, length and empty string checks are performed in the gui.
+	 * Second it sets the start word as a root, meaning it's distance is 0 and it's parent is its self.
+	 * It then does an initial iteration around that word and gets all words within a distance of 1 from its self.
+	 * Next it performs a loop where the initial word list is iterated around and then the word list that it returns is iterated around,
+	 * this continues until the end word has a parent or there's no more words to process.
+	 * Finally, it displays the tree and tells the GUI that it is done.
+	 */
 	private void shortestRoute(){
 		//get the words
 		Word startW,endW;
@@ -96,6 +130,13 @@ public class Graph implements Runnable{
 		}
 		feedback.done();
 	}
+	/**
+	 * Generates a word tree of arbitrary length
+	 * First it checks to make sure the initial word exists
+	 * Then it finds a single word with a distance of 1 to it and sets its parent as the initial word.
+	 * The same process is done with the new word, looped until the length it reached or it cant find a direction to go.
+	 * When done, it displays the tree and tells the GUI it's done. 
+	 */
 	private void generation(){
 		Word current = dictionary.get(start);
 		feedback.status("Checking word in dictionary..."+"\n",true);
@@ -118,6 +159,12 @@ public class Graph implements Runnable{
 		}
 		feedback.done();
 	}
+	/**
+	 * Does the work for generation
+	 * @param current The current word
+	 * @param dictionary the word list to check in
+	 * @return a word that has a distance to 1 of the input word
+	 */
 	private Word generationAddWord(Word current, HashMap<String,Word> dictionary){
 		for(Word w: dictionary.values()){
 			if(w.differnce(current)==1){

@@ -1,5 +1,8 @@
 package tis4.cs211.assignment1;
-
+/**
+ * Stores the node data of the graph, specifically a word.
+ * @author Tim Stableford
+ */
 public class Word {
 	private String word;
 	private Word parent = null;
@@ -7,10 +10,14 @@ public class Word {
 	public Word(String word){
 		this.word = word;
 	}
+	/**
+	 * @param other the other word to compare against
+	 * @return the difference in letters between this word and the other word
+	 */
 	public int differnce(Word other){
 		int difference=0;
 		byte[] thisWord = this.word.getBytes();
-		byte[] otherWord = other.getWord().getBytes();
+		byte[] otherWord = other.word.getBytes();
 		if(thisWord.length!=otherWord.length){ return -1; }
 		for(int i=0; i<word.length(); i++){
 			if(thisWord[i]!=otherWord[i]){
@@ -28,18 +35,9 @@ public class Word {
 	public void setParent(Word word){
 		this.parent = word;
 	}
-	public int distanceToRoot(){
-		if(distance<0){
-			Word tempParent = parent;
-			if(parent!=null){
-				distance = 0;
-				while(tempParent!=null){
-					distance++;
-				}
-			}
-		}
-		return distance;
-	}
+	/**
+	 * Sets this as the start word
+	 */
 	public void setRoot(){
 		distance = 0;
 		this.parent = this;
@@ -54,6 +52,9 @@ public class Word {
 		}
 		return "Word - "+word+" parent - "+p;
 	}
+	/**
+	 * Resets the word to the state where it was loaded
+	 */
 	public void reset(){
 		parent = null;
 		distance = -1;
