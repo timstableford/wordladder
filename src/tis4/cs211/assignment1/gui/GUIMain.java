@@ -38,7 +38,7 @@ public class GUIMain extends JFrame implements ActionListener, Feedback{
 	public GUIMain(){
 		dictLoader = new DictionaryLoader(this);
 		
-		this.setSize(400,300);
+		this.setSize(500,500);
 		this.setTitle("Ladder Generator 5000");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		//menu
@@ -121,7 +121,6 @@ public class GUIMain extends JFrame implements ActionListener, Feedback{
 		mainPanel.add(resScroll,c);
 		
 		///////////////////
-		this.pack();
 		this.setVisible(true);
 	}
 	@Override
@@ -160,7 +159,7 @@ public class GUIMain extends JFrame implements ActionListener, Feedback{
 	private void calculateShortest(String start, String end){
 		try{
 			Dictionaries dict = Dictionaries.valueOf("N"+start.length()); 
-			status("",false);
+			status(null,false);
 			calculate.setEnabled(false);
 			generation.setEnabled(false);
 			Graph g = new Graph(dictLoader,dict,this,start,end);
@@ -172,7 +171,7 @@ public class GUIMain extends JFrame implements ActionListener, Feedback{
 	private void generation(String start, int length){
 		try{
 			Dictionaries dict = Dictionaries.valueOf("N"+start.length()); 
-			status("",false);
+			status(null,false);
 			calculate.setEnabled(false);
 			generation.setEnabled(false);
 			Graph g = new Graph(dictLoader,dict,this,start,length);
