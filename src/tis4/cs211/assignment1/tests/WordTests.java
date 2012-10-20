@@ -43,6 +43,10 @@ public class WordTests {
 		assertEquals("Test with different length words",a.difference(e),-1);
 	}
 	@Test
+	public void testDifferenceToNull(){
+		assertEquals("Test with null",a.difference(null),-1);
+	}
+	@Test
 	public void testSetGetParent(){
 		a.setParent(b);
 		assertTrue("parent test",a.getParent()==b);

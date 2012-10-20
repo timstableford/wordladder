@@ -15,9 +15,9 @@ public class Word {
 	 */
 	public int difference(Word other){
 		int difference=0;
+		if(other==null||this.word.length()!=other.word.length()){ return -1; }
 		byte[] thisWord = this.word.getBytes();
 		byte[] otherWord = other.word.getBytes();
-		if(thisWord.length!=otherWord.length){ return -1; }
 		for(int i=0; i<word.length(); i++){
 			if(thisWord[i]!=otherWord[i]){
 				difference++;
