@@ -45,12 +45,12 @@ public class WordTests {
 	@Test
 	public void testSetGetParent(){
 		a.setParent(b);
-		assertEquals("parent test",a.getParent(),b);
+		assertTrue("parent test",a.getParent()==b);
 	}
 	@Test
 	public void testSetRoot(){
 		d.setRoot();
-		assertEquals("parent not self for root",d.getParent(),d);
+		assertTrue("parent not self for root",d.getParent()==d);
 	}
 	@Test
 	public void testEquals(){

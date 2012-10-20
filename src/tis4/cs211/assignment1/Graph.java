@@ -40,7 +40,7 @@ public class Graph implements Runnable{
 	 * Goes through each word in the dictionary, if that word has a change of only 1 letter, then it sets that words parent as the root word and adds it to a hashmap.
 	 * When complete it then goes through that hashmap and removes all words in it from the dictionary.
 	 */
-	private HashMap<String, Word> iterateWord(HashMap<String, Word> dictionary, Word tempRoot){
+	public HashMap<String, Word> iterateWord(HashMap<String, Word> dictionary, Word tempRoot){
 		HashMap<String, Word> map = new HashMap<String, Word>();
 		for(Word h: dictionary.values()){
 			if(h.difference(tempRoot)==1){
@@ -58,7 +58,7 @@ public class Graph implements Runnable{
 	 * @param incomingHash the hash to iterate all the words in
 	 * @return a hash of all the words that have had their parent set inside of this operation
 	 */
-	private HashMap<String, Word> iterateMap(HashMap<String, Word> dictionary, HashMap<String, Word> incomingHash){
+	public HashMap<String, Word> iterateMap(HashMap<String, Word> dictionary, HashMap<String, Word> incomingHash){
 		HashMap<String, Word> output = new HashMap<String,Word>();
 		for(Word h : incomingHash.values()){
 			output.putAll(iterateWord(dictionary,h));
@@ -70,17 +70,19 @@ public class Graph implements Runnable{
 	 * @param end The word to start from, always has to be the end because it works backwards through parents
 	 * while the current word, initially the end word, has a parent send this word to the feedback object
 	 */
-	public void displayWordTree(Word end){
+	public String displayWordTree(Word end){
+		StringBuffer output = new StringBuffer();
 		Word targetWord = end;
 		if(targetWord.getParent()==null){
-			feedback.status("no link found",true);
-			return;
+			output.append("no link found");
+		}else{
+			output.append(end.getWord()+" ");
+			while(targetWord!=null&&targetWord.getParent()!=targetWord){
+				output.append(" - "+targetWord.getParent().getWord());
+				targetWord = targetWord.getParent();
+			}
 		}
-		feedback.status(end.getWord()+" ",true);
-		while(targetWord!=null&&targetWord.getParent()!=targetWord){
-			feedback.status(" - "+targetWord.getParent().getWord(),true);
-			targetWord = targetWord.getParent();
-		}
+		return output.toString();
 	}
 	/**
 	 * Loads the dictionary and chooses which mode to do
@@ -126,7 +128,7 @@ public class Graph implements Runnable{
 				hashMap = this.iterateMap(dictionary,hashMap);
 			}
 			feedback.status("Displaying ladder"+"\n",true);
-			displayWordTree(endW);
+			feedback.status(displayWordTree(endW),true);
 		}
 		feedback.done();
 	}
@@ -155,7 +157,7 @@ public class Graph implements Runnable{
 			}
 			feedback.status("Ladder of length "+(i+1)+"\n", true);
 			feedback.status("Displaying ladder\n",true);
-			displayWordTree(current);
+			feedback.status(displayWordTree(current),true);
 		}
 		feedback.done();
 	}
