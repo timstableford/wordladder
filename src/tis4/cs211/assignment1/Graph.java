@@ -125,12 +125,16 @@ public class Graph implements Runnable{
 			//make sure the start word isnt in the dictonary, if it is remove it
 			localDictionary.remove(startWord.getWord());
 			feedback.status("Iteration 0\n", true);
+			long runtime = System.nanoTime();
 			HashMap<String, Word> hashMap = iterateWord(localDictionary,startWord);
 			for(int i=1; endWord.getParent()==null&&hashMap.size()>0; i++){
 				feedback.status("Iteration "+i+"\n",true);
 				hashMap = this.iterateMap(localDictionary, hashMap);
 			}
 			feedback.status("Displaying ladder"+"\n",true);
+			runtime = System.nanoTime() - runtime;
+			double retTime = runtime/Math.pow(10, 9);
+			feedback.status("Runtime "+retTime+"s\n",true);
 			feedback.status(displayWordTree(endWord),true);
 		}
 		feedback.done();
