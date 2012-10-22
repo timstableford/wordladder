@@ -156,6 +156,7 @@ public class Graph implements Runnable{
 			//continue if it's in the dictionary
 			feedback.status("Doing generation...\n",true);
 			current.setRoot();
+			long runtime = System.nanoTime();
 			localDictionary.remove(current.getWord());
 			int i = 0;
 			for(i=0;i<(localLength-1); i++){
@@ -164,6 +165,9 @@ public class Graph implements Runnable{
 				current = next;
 			}
 			feedback.status("Ladder of length "+(i+1)+"\n", true);
+			runtime = System.nanoTime() - runtime;
+			double retTime = runtime/Math.pow(10, 9);
+			feedback.status("Runtime "+retTime+"s\n",true);
 			feedback.status("Displaying ladder\n",true);
 			feedback.status(displayWordTree(current),true);
 		}
