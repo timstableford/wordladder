@@ -32,27 +32,27 @@ public class DictionaryTests implements Feedback{
 	}
 	@Test 
 	public void loadTestDictionary() {
-		dict = loader.getDictionary(Dictionaries.NTEST);
+		dict = loader.getDictionary(Dictionaries.TEST);
 		assertNotNull("Dictionary null",dict);
 	}
 	@Test
 	public void testLoadDictionaryAndCheck() {
-		dict = loader.getDictionary(Dictionaries.NTEST);
+		dict = loader.getDictionary(Dictionaries.TEST);
 		assertTrue("Dictionaries not equal",dict.equals(setDict));
 	}
 	@Test
 	public void testAllWordsInDictionary(){
-		dict = loader.getDictionary(Dictionaries.NTEST);
+		dict = loader.getDictionary(Dictionaries.TEST);
 		assertNotNull(a.getWord()+" missing",dict.get(a.getWord()));
 		assertNotNull(b.getWord()+" missing",dict.get(b.getWord()));
 		assertNotNull(c.getWord()+" missing",dict.get(c.getWord()));
 	}
 	@Test
 	public void loadDictionaryTwiceAndTestResetting(){
-		HashMap<String,Word> dictA = loader.getDictionary(Dictionaries.NTEST);
+		HashMap<String,Word> dictA = loader.getDictionary(Dictionaries.TEST);
 		dictA.get("fox").setRoot();
 		dictA.get("fax").setParent(dictA.get("fox"));
-		HashMap<String,Word> dictB = loader.getDictionary(Dictionaries.NTEST);
+		HashMap<String,Word> dictB = loader.getDictionary(Dictionaries.TEST);
 		assertFalse("fox parent not reset",dictB.get("fox").getParent()==dictB.get("fox"));
 		assertFalse("fax parent not reset",dictB.get("fox")==dictB.get("fax").getParent());
 	}

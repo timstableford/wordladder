@@ -21,8 +21,8 @@ public class GraphTest implements Feedback{
 	@Before
 	public void setUp() throws Exception {
 		loader = new DictionaryLoader(this);
-		graphGeneration = new Graph(loader, Dictionaries.NTEST, this, "max", 10);
-		graphShortest = new Graph(loader, Dictionaries.NTEST, this, "fox", "max");
+		graphGeneration = new Graph(loader, Dictionaries.TEST, this, "max", 10);
+		graphShortest = new Graph(loader, Dictionaries.TEST, this, "fox", "max");
 		dictionary = new HashMap<String,Word>();
 		a = new Word("fox");
 		b = new Word("fax");
