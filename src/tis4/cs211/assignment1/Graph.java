@@ -73,7 +73,7 @@ public class Graph implements Runnable{
 	public String displayWordTree(Word localEnd){
 		StringBuffer output = new StringBuffer();
 		Word targetWord = localEnd;
-		if(targetWord.getParent()==null||targetWord==targetWord.getParent()){
+		if(targetWord==null||targetWord.getParent()==null||targetWord==targetWord.getParent()){
 			output.append("no link found");
 		}else{
 			output.append(localEnd.getWord());
@@ -148,11 +148,11 @@ public class Graph implements Runnable{
 	 * @return the word it finishes on
 	 */
 	public Word generation(HashMap<String,Word> localDictionary, String localStart, int localLength){
-		Word current = localDictionary.get(localStart);
-		feedback.status("Checking word in dictionary..."+"\n",true);
-		if(current==null){
+		Word current = null;
+		if(!localDictionary.containsKey(localStart)){
 			feedback.error("Word not in dictionary");
 		}else{
+			current = localDictionary.get(localStart);
 			//continue if it's in the dictionary
 			feedback.status("Doing generation...\n",true);
 			current.setRoot();

@@ -102,6 +102,26 @@ public class GraphTest implements Feedback{
 		Word end = graphGeneration.generation(dictionary, "yes", 10);
 		assertEquals("should be no link","no link found",graphGeneration.displayWordTree(end));
 	}
+	@Test
+	public void testGenerationEmptyString(){
+		Word end = graphGeneration.generation(dictionary, "", 10);
+		assertEquals("should be no link","no link found",graphGeneration.displayWordTree(end));
+	}
+	@Test
+	public void testGenerationExpected(){
+		Word end = graphGeneration.generation(dictionary, "max", 10);
+		assertEquals("should be cox - fox - fax - max","cox - fox - fax - max",graphGeneration.displayWordTree(end));
+	}
+	@Test
+	public void testGenerationAddWordNull(){
+		Word next = graphGeneration.generationAddWord(null, dictionary);
+		assertNull("next word should be null",next);
+	}
+	@Test
+	public void testGenerationAddWordExpected(){
+		Word next = graphGeneration.generationAddWord(b, dictionary);
+		assertEquals("should be fax",c,next);
+	}
 	@Override
 	public void status(String status, boolean append) {
 		//System.out.print(status);
