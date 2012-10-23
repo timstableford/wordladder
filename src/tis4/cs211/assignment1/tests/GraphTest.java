@@ -57,7 +57,7 @@ public class GraphTest implements Feedback{
 		c.setParent(b);
 		b.setParent(a);
 		a.setRoot();
-		assertEquals("word tree display wrong",graphGeneration.displayWordTree(c),"max - fax - fox");
+		assertEquals("word tree display wrong",graphGeneration.displayWordTree(c),"fox - fax - max");
 	}
 	@Test
 	public void testDisplayWordTreeNoLink(){
@@ -68,13 +68,13 @@ public class GraphTest implements Feedback{
 	public void testDisplayWordTreeStartNotRoot(){
 		c.setParent(b);
 		b.setParent(a);
-		assertEquals("problem displaying tree","max - fax - fox",graphGeneration.displayWordTree(c));
+		assertEquals("problem displaying tree","fox - fax - max",graphGeneration.displayWordTree(c));
 	}
 	@Test
 	public void testShortestRouteFoxToMax(){
 		Word end = dictionary.get("max");
 		graphShortest.shortestRoute(dictionary, "fox", "max");
-		assertEquals("incorrect shortest path","max - fax - fox",graphGeneration.displayWordTree(end));
+		assertEquals("incorrect shortest path","fox - fax - max",graphGeneration.displayWordTree(end));
 	}
 	@Test
 	public void testShortestRouteToSelf(){
@@ -110,7 +110,7 @@ public class GraphTest implements Feedback{
 	@Test
 	public void testGenerationExpected(){
 		Word end = graphGeneration.generation(dictionary, "max", 10);
-		assertEquals("should be cox - fox - fax - max","cox - fox - fax - max",graphGeneration.displayWordTree(end));
+		assertEquals("should be cox - max - fax - fox - cox","max - fax - fox - cox",graphGeneration.displayWordTree(end));
 	}
 	@Test
 	public void testGenerationAddWordNull(){

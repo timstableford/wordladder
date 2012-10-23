@@ -12,7 +12,6 @@ public class Graph implements Runnable{
 	private int length;
 	private DictionaryLoader dictLoader = null;
 	private Dictionaries dict = null;
-	private HashMap<String,Word> dictionary = null;
 	/**
 	 * Called for shortest route
 	 */
@@ -78,8 +77,8 @@ public class Graph implements Runnable{
 		}else{
 			output.append(localEnd.getWord());
 			while(targetWord!=null&&targetWord.getParent()!=null&&targetWord.getParent()!=targetWord){
-				output.append(" - ");
-				output.append(targetWord.getParent().getWord());
+				output.insert(0," - ");
+				output.insert(0, targetWord.getParent().getWord());
 				targetWord = targetWord.getParent();
 			}
 		}
@@ -91,6 +90,7 @@ public class Graph implements Runnable{
 	@Override
 	public void run() {
 		//load dictionary
+		HashMap<String,Word> dictionary = null;
 		if(dictLoader!=null&&dictionary==null){ 
 			dictionary = dictLoader.getDictionary(dict);
 		}
