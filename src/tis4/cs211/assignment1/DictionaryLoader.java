@@ -10,7 +10,6 @@ import java.util.Scanner;
  *
  */
 public class DictionaryLoader{
-	private String dictName;
 	private Feedback feedback;
 	private HashMap<Dictionaries,HashMap<String,Word>> dictionaryCollection;
 	/**
@@ -43,7 +42,7 @@ public class DictionaryLoader{
 	 * @param dict the dictionary to load
 	 */
 	private void load(Dictionaries dict){
-		this.dictName = dict.file();
+		String dictName = dict.file();
 		HashMap<String, Word> hash = new HashMap<String, Word>();
 		Scanner scanner = new Scanner(new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(dictName))));
 		while(scanner.hasNextLine()){
