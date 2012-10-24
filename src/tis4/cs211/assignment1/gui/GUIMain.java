@@ -41,12 +41,6 @@ public class GUIMain extends JFrame implements ActionListener, Feedback{
 		this.setSize(500,500);
 		this.setTitle("Ladder Generator 5000");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		//menu
-		JMenuBar menuBar = new JMenuBar();
-		this.add(menuBar,BorderLayout.NORTH);
-		
-		JMenu file = new JMenu("File");
-		menuBar.add(file);
 		
 		//main panel
 		JPanel mainPanel = new JPanel();
